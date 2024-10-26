@@ -1,9 +1,10 @@
 from os import path
 
 # Pastas onde estão os assets
-FNT_DIR = path.join(path.dirname(__file__), "assets", "fonts") # Pasta de fontes
-IMG_DIR = path.join(path.dirname(__file__), "assets", "images") # Pasta de imagens
-SND_DIR = path.join(path.dirname(__file__), "assets", "sounds") # Pasta de sons
+FNT_DIR = path.abspath(path.join(path.dirname(__file__), "assets", "fonts") )# Pasta de fontes
+IMG_DIR = path.abspath(path.join(path.dirname(__file__), "assets", "images")) # Pasta de imagens
+SND_DIR = path.abspath(path.join(path.dirname(__file__), "assets", "sounds")) # Pasta de sons
+TXT_DIR = path.abspath(path.join(path.dirname(__file__))) # Pasta de textos
 
 # Dados gerais do jogo
 WIDTH = 600    # Largura da tela

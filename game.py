@@ -22,28 +22,17 @@ while state != QUIT:
     if state == INIT:
         state = init_screen(window)
     if state == MENU:
-        main_menu = menu(window)
-        state = main_menu[0]
-        dificuldade = main_menu[1]
+        state, dificuldade = menu(window)
     elif state == LEVEL1:
-        lvl1 = level1(window, dificuldade)
-        state = lvl1[0]
-        tempo = lvl1[1]
-        dificuldade = lvl1[2]
+        state, tempo, dificuldade = level1(window, dificuldade)
         if state == END_SCREEN:
             state = game_over(window, "level1", tempo, dificuldade)
     elif state == LEVEL2:
-        lvl2 = level2(window, dificuldade)
-        state = lvl2[0]
-        tempo = lvl2[1]
-        dificuldade = lvl2[2]
+        state, tempo, dificuldade = level2(window, dificuldade)
         if state == END_SCREEN:
             state = game_over(window, "level2", tempo, dificuldade)
     elif state == LEVEL3:
-        lvl3 = level3(window, dificuldade)
-        state = lvl3[0]
-        tempo = lvl3[1]
-        dificuldade = lvl3[2]
+        state, tempo, dificuldade = level3(window, dificuldade)
         if state == END_SCREEN:
             state = game_over(window, "level3", tempo, dificuldade)
 

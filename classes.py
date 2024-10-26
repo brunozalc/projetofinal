@@ -3,13 +3,20 @@ from config import *
 from assets import *
 from funcs import *
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, groups, assets, plat_inicial_top):
+class Rect(pygame.sprite.Sprite):
+    def __init__(self, image, groups, assets):
         pygame.sprite.Sprite.__init__(self)
-
-        self.image = assets[PLAYER_IMG]
+        self.image = image
         self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
+
+        self.groups = groups
+        self.assets = assets
+
+class Player(Rect):
+    def __init__(self, groups, assets, plat_inicial_top):
+        super().__init__(assets[PLAYER_IMG], groups, assets)
+
         self.rect.centerx = WIDTH/2
         self.rect.bottom = plat_inicial_top
 
@@ -27,9 +34,6 @@ class Player(pygame.sprite.Sprite):
         self.on_platform = False # Variável que é True se o jogador estiver em cima de uma plataforma e False caso contrário
         self.is_on_platform_right = False # Variável que é True se o jogador estiver encostando no lado direito da plataforma e False caso contrário
         self.is_on_platform_left = False # Variável que é True se o jogador estiver encostando no lado direito da plataforma e False caso contrário
-
-        self.groups = groups
-        self.assets = assets
 
     def update(self):
 
@@ -118,41 +122,23 @@ class Player(pygame.sprite.Sprite):
             else:
                 flag.rect.centery -= self.GRAVITY
 
-class Platform(pygame.sprite.Sprite):
+class Platform(Rect):
     def __init__(self, groups, assets, centerx, centery):
-        pygame.sprite.Sprite.__init__(self)
-
-        self.image = assets[PLATFORM]
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect()
+        super().__init__(assets[PLATFORM], groups, assets)
 
         self.rect.centerx = centerx
         self.rect.centery = centery
 
-        self.groups = groups
-        self.assets = assets
-
-class Init_Platform(pygame.sprite.Sprite):
+class Init_Platform(Rect):
     def __init__(self, groups, assets, left, bottom):
-        pygame.sprite.Sprite.__init__(self)
-
-        self.image = assets[INIT_PLAT]
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect()
+        super().__init__(assets[INIT_PLAT], groups, assets)
 
         self.rect.left = left
         self.rect.bottom = bottom
 
-        self.groups = groups
-        self.assets = assets
-
-class Enemy_1(pygame.sprite.Sprite):
+class Enemy_1(Rect):
     def __init__(self, groups, assets, x, y, pace=3, turn=70, speed= 30):           # vira em 98, pq 150 da plataforma - player width
-        pygame.sprite.Sprite.__init__(self)
-
-        self.image = assets["enemy1"]
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect()
+        super().__init__(assets["enemy1"], groups, assets)
 
         self.rect.center = (x, y)  # Onde está
         self.pace_ta = pace        # Tamanho do passo
@@ -161,9 +147,6 @@ class Enemy_1(pygame.sprite.Sprite):
         self.turn = turn           # limitando a distância
         self.speed = speed         # "intervalo de tempo" do passo
         self.pace_t = 0            # tempo do último passo
-        
-        self.assets = assets
-        self.groups = groups
 
     def update(self):
         # Implementando o movimento correto agora
@@ -186,29 +169,18 @@ class Enemy_1(pygame.sprite.Sprite):
                 self.direction = 1
                 self.pace_c = 0
 
-class Spike(pygame.sprite.Sprite):
+class Spike(Rect):
     def __init__(self, groups, assets, x_pos, bottom, rotacao):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = assets[SPIKE]
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect()
+        super().__init__(assets[SPIKE], groups, assets)
 
         self.rect.centerx = x_pos
         self.rect.bottom = bottom
 
         self.image = pygame.transform.rotate(assets[SPIKE], rotacao)
 
-        self.assets = assets
-        self.groups = groups
-
-class Flag(pygame.sprite.Sprite):
+class Flag(Rect):
     def __init__(self, groups, assets, x_pos, bottom):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = assets[FLAG]
-        self.mask = pygame.mask.from_surface(self.image)
-        self.rect = self.image.get_rect()
+        super().__init__(assets[FLAG], groups, assets)
+        
         self.rect.centerx = x_pos
         self.rect.bottom = bottom
-
-        self.assets = assets
-        self.groups = groups

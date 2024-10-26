@@ -4,123 +4,71 @@ from config import *
 from assets import CHECK, E_CHECK, MENU_FONT, load_assets
 
 def menu(screen):
-
     clock = pygame.time.Clock()
-
     assets = load_assets()
 
-    dificuldade = [True, True] # lista em que o primeiro elemento indica se os inimigos vão aparecer o segundo indica se os inimigos vão aparecer
+    # Initialize game state
+    dificuldade = [True, True]
+    state = None
 
-    pygame.mixer.music.load((path.join(SND_DIR, "menu_music.mp3")))
+    # Load and play background music
+    pygame.mixer.music.load(path.join(SND_DIR, "menu_music.mp3"))
     pygame.mixer.music.play(loops=-1)
+
     running = True
     while running:
-
-        # Ajustando a velocidade do jogo
+        # Limit frame rate
         clock.tick(FPS)
 
-        # Tratando os eventos
+        # Handle events
         for event in pygame.event.get():
-
-            # Evento de sair
             if event.type == pygame.QUIT:
                 state = QUIT
                 running = False
-
-            # Evento para começar o jogo
-            if event.type == pygame.MOUSEBUTTONDOWN:
-
-                # Entrar no nível 1
-                if inside_level_1 == True:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                if inside_button(mouse_pos, LEVEL1_BUTTON_XPOS, LEVEL1_BUTTON_YPOS):
                     state = LEVEL1
                     running = False
-
-                # Entrar no nível 2
-                if inside_level_2 == True:
+                elif inside_button(mouse_pos, LEVEL2_BUTTON_XPOS, LEVEL2_BUTTON_YPOS):
                     state = LEVEL2
                     running = False
-
-                # Entrar no nível 3
-                if inside_level_3 == True:
+                elif inside_button(mouse_pos, LEVEL3_BUTTON_XPOS, LEVEL3_BUTTON_YPOS):
                     state = LEVEL3
                     running = False
+                elif inside_button(mouse_pos, 50, 550):
+                    dificuldade[0] = not dificuldade[0]
+                elif inside_button(mouse_pos, 50, 630):
+                    dificuldade[1] = not dificuldade[1]
 
-                # Ativar/desativar inimigos
-                if inside_enemy == True:
-                    if dificuldade[0] == True:
-                        dificuldade[0] = False
-                    elif dificuldade[0] == False:
-                        dificuldade[0] = True
-
-                # Ativar/desativar espinhos
-                if inside_spike == True:
-                    if dificuldade[1] == True:
-                        dificuldade[1] = False
-                    elif dificuldade[1] == False:
-                        dificuldade[1] = True
-
-        # Pegando a posição do mouse (e colocando numa tupla)
-        mouse = pygame.mouse.get_pos()
-
-        # Desenhando a tela
+        # Draw the menu
         screen.fill(BLACK)
+        draw_button(screen, LEVEL1_BUTTON_XPOS, LEVEL1_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT, "LEVEL 1", inside_button(pygame.mouse.get_pos(), LEVEL1_BUTTON_XPOS, LEVEL1_BUTTON_YPOS), assets[MENU_FONT], GRAY, DARK_GRAY)
+        draw_button(screen, LEVEL2_BUTTON_XPOS, LEVEL2_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT, "LEVEL 2", inside_button(pygame.mouse.get_pos(), LEVEL2_BUTTON_XPOS, LEVEL2_BUTTON_YPOS), assets[MENU_FONT], DARK_BLUE, DARKEST_BLUE)
+        draw_button(screen, LEVEL3_BUTTON_XPOS, LEVEL3_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT, "LEVEL 3", inside_button(pygame.mouse.get_pos(), LEVEL3_BUTTON_XPOS, LEVEL3_BUTTON_YPOS), assets[MENU_FONT], RED, LIGHT_RED)
+        draw_toggle(screen, dificuldade[0], 50, 550, "Inimigos", assets[MENU_FONT], assets[CHECK], assets[E_CHECK])
+        draw_toggle(screen, dificuldade[1], 50, 630, "Espinhos", assets[MENU_FONT], assets[CHECK], assets[E_CHECK])
 
-        # Botão para entrar no nível 1
-        inside_level_1 = False # variável 'True' se o mouse estiver dentro do botao do Nível 1 e 'False' caso contrário
-        pygame.draw.rect(screen, GRAY, (LEVEL1_BUTTON_XPOS, LEVEL1_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT))
-        LEVEL1_TEXT = assets[MENU_FONT].render("LEVEL 1", True, WHITE)
-        screen.blit(LEVEL1_TEXT, (LEVEL1_BUTTON_XPOS + 7, LEVEL1_BUTTON_YPOS + 15))
-        if mouse[0] in range(LEVEL1_BUTTON_XPOS, LEVEL1_BUTTON_XPOS + LEVEL_BUTTON_WIDTH) and mouse[1] in range(LEVEL1_BUTTON_YPOS, LEVEL1_BUTTON_YPOS + LEVEL_BUTTON_HEIGHT):
-            inside_level_1 = True 
-            pygame.draw.rect(screen, DARK_GRAY, (LEVEL1_BUTTON_XPOS, LEVEL1_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT))
-            LEVEL1_TEXT = assets[MENU_FONT].render("LEVEL 1", True, GRAY)
-            screen.blit(LEVEL1_TEXT, (LEVEL1_BUTTON_XPOS + 7, LEVEL1_BUTTON_YPOS + 15))
-
-        # Botão para entrar no nível 2
-        inside_level_2 = False # variável 'True' se o mouse estiver dentro do botao do Nível 2 e 'False' caso contrário
-        pygame.draw.rect(screen, DARK_BLUE, (LEVEL2_BUTTON_XPOS, LEVEL2_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT))
-        LEVEL2_TEXT = assets[MENU_FONT].render("LEVEL 2", True, WHITE)
-        screen.blit(LEVEL2_TEXT, (LEVEL2_BUTTON_XPOS, LEVEL2_BUTTON_YPOS + 15))
-        if mouse[0] in range(LEVEL2_BUTTON_XPOS, LEVEL2_BUTTON_XPOS + LEVEL_BUTTON_WIDTH) and mouse[1] in range(LEVEL2_BUTTON_YPOS, LEVEL2_BUTTON_YPOS + LEVEL_BUTTON_HEIGHT):
-            inside_level_2 = True 
-            pygame.draw.rect(screen, DARKEST_BLUE, (LEVEL2_BUTTON_XPOS, LEVEL2_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT))
-            LEVEL2_TEXT = assets[MENU_FONT].render("LEVEL 2", True, GRAY)
-            screen.blit(LEVEL2_TEXT, (LEVEL2_BUTTON_XPOS, LEVEL2_BUTTON_YPOS + 15))
-
-        # Botão para entrar no nível 3
-        inside_level_3 = False # variável 'True' se o mouse estiver dentro do botao do Nível 3 e 'False' caso contrário
-        pygame.draw.rect(screen, RED, (LEVEL3_BUTTON_XPOS, LEVEL3_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT))
-        LEVEL3_TEXT = assets[MENU_FONT].render("LEVEL 3", True, WHITE)
-        screen.blit(LEVEL3_TEXT, (LEVEL3_BUTTON_XPOS, LEVEL3_BUTTON_YPOS + 15))
-        if mouse[0] in range(LEVEL3_BUTTON_XPOS, LEVEL3_BUTTON_XPOS + LEVEL_BUTTON_WIDTH) and mouse[1] in range(LEVEL3_BUTTON_YPOS, LEVEL3_BUTTON_YPOS + LEVEL_BUTTON_HEIGHT):
-            inside_level_3 = True 
-            pygame.draw.rect(screen, LIGHT_RED, (LEVEL3_BUTTON_XPOS, LEVEL3_BUTTON_YPOS, LEVEL_BUTTON_WIDTH, LEVEL_BUTTON_HEIGHT))
-            LEVEL3_TEXT = assets[MENU_FONT].render("LEVEL 3", True, GRAY)
-            screen.blit(LEVEL3_TEXT, (LEVEL3_BUTTON_XPOS, LEVEL3_BUTTON_YPOS + 15))
-
-        # Botão de ativar/desativar inimigos
-        inside_enemy = False # Variável que é True se o mouse estiver dentro da caixa e False caso contrário
-        if dificuldade[0] == True: # Se os inimigos estiverem ativados, aparecerá um certinho
-            screen.blit(assets[CHECK], (50, 550))
-        elif dificuldade[0] == False: # Se os inimigos estiverem desativados, aparecerá um X
-            screen.blit(assets[E_CHECK], (50, 550))
-        enemy_text = assets[MENU_FONT].render("Inimigos", True, WHITE)
-        screen.blit(enemy_text, (125, 560))
-        if mouse[0] in range(50, 50 + 60) and mouse[1] in range(550, 550 + 70):
-            inside_enemy = True
-
-        # Botão de ativar/desativar espinhos
-        inside_spike = False # Variável que é True se o mouse estiver dentro da caixa e False caso contrário
-        if dificuldade[1] == True: # Se os espinhos estiverem ativados, aparecerá um certinho
-            screen.blit(assets[CHECK], (50, 630))
-        elif dificuldade[1] == False: # Se os espinhos estiverem desativados, aparecerá um X
-            screen.blit(assets[E_CHECK], (50, 630))
-        spikes_text = assets[MENU_FONT].render("Espinhos", True, WHITE)
-        screen.blit(spikes_text, (125, 640))
-        if mouse[0] in range(50, 50 + 60) and mouse[1] in range(630, 630 + 70):
-            inside_spike = True
-
-        # Invertendo o display
+        # Update the display
         pygame.display.flip()
 
     return state, dificuldade
+
+def inside_button(mouse_pos, x, y):
+    """Check if mouse position is inside the button area."""
+    mx, my = mouse_pos
+    return x <= mx <= x + LEVEL_BUTTON_WIDTH and y <= my <= y + LEVEL_BUTTON_HEIGHT
+
+def draw_button(screen, x, y, width, height, text, is_hovered, font, color, hover_color):
+    """Draw a button with optional hover effect."""
+    button_color = hover_color if is_hovered else color
+    pygame.draw.rect(screen, button_color, (x, y, width, height))
+    rendered_text = font.render(text, True, WHITE if is_hovered else GRAY)
+    screen.blit(rendered_text, (x + 7, y + 15))
+
+def draw_toggle(screen, is_active, x, y, label, font, check_img, e_check_img):
+    """Draw a toggle switch with a label."""
+    img = check_img if is_active else e_check_img
+    screen.blit(img, (x, y))
+    label_text = font.render(label, True, WHITE)
+    screen.blit(label_text, (x + 75, y + 10))
